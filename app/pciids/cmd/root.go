@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/powersj/pciids/pkg/ids"
-	"github.com/powersj/pciids/pkg/query"
+	"github.com/yeahdongcn/pciids/pkg/ids"
+	"github.com/yeahdongcn/pciids/pkg/query"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -15,6 +15,7 @@ import (
 
 const (
 	version         = "v1.3.0"
+	numVendorIDs    = 1
 	numDeviceIDs    = 2
 	numSubDeviceIDs = 4
 )
@@ -45,14 +46,14 @@ func setup(cmd *cobra.Command, args []string) {
 	}
 }
 
-// Checks that there are exactly two arguments.
+// Checks that there are exactly 1, 2, or 4 arguments.
 func args(cmd *cobra.Command, args []string) error {
-	if len(args) != numDeviceIDs {
-		if len(args) != numSubDeviceIDs {
-			return errors.New(
-				"require either two or four PCI IDs as arguments (e.g. 10de 1467)",
-			)
-		}
+	length := len(args)
+	if length != numVendorIDs && length != numDeviceIDs &&
+		length != numSubDeviceIDs {
+		return errors.New(
+			"invalid number of arguments, expected 1, 2, or 4 (e.g. 10de 1467)",
+		)
 	}
 
 	return nil
@@ -63,15 +64,21 @@ func root(cmd *cobra.Command, args []string) error {
 	var ids []ids.PCIID
 	var err error
 
-	if len(args) == numSubDeviceIDs {
+	switch len(args) {
+	case numSubDeviceIDs:
 		ids, err = query.SubDevice(args[0], args[1], args[2], args[3])
 		if err != nil {
 			return errors.Wrap(err, "Error while querying for device")
 		}
-	} else {
+	case numDeviceIDs:
 		ids, err = query.Device(args[0], args[1])
 		if err != nil {
 			return errors.Wrap(err, "Error while querying for device")
+		}
+	case numVendorIDs:
+		ids, err = query.Vendor(args[0])
+		if err != nil {
+			return errors.Wrap(err, "Error while querying for vendor")
 		}
 	}
 

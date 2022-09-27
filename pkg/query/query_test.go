@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/powersj/pciids/pkg/file"
+	"github.com/yeahdongcn/pciids/pkg/file"
 
 	"github.com/stretchr/testify/assert"
 )

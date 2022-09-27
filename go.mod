@@ -1,4 +1,4 @@
-module github.com/powersj/pciids
+module github.com/yeahdongcn/pciids
 
 go 1.14
 

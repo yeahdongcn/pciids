@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/powersj/pciids/app/pciids/cmd"
+	"github.com/yeahdongcn/pciids/app/pciids/cmd"
 )
 
 func main() {
